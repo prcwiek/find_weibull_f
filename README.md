@@ -5,7 +5,7 @@ Simple program for finding the Weibull distribution parameters
 k shape factor and c scale factor.<br>
 The file <i>WS125.txt</i> with the example wind measurement data set comes
 from the measurement mast US Virgin Islands St. Thomas Bovoni and
-was downloaded from the site 
+was downloaded from the site<br>
 <https://midcdmz.nrel.gov/apps/sitehome.pl?site=USVILONA>.
 
 ## Data source information
