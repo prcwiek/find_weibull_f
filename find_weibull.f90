@@ -12,6 +12,8 @@
 !
 ! https://midcdmz.nrel.gov/
 !
+! Sorting function from 
+! https://fortran-lang.discourse.group/t/modern-fortran-sample-code/2019/4
 
 program find_weibull
 	implicit none
@@ -66,8 +68,7 @@ program find_weibull
 	c = ws_mean * (0.586 + 0.433/k)**(-1/k)
 	
 	! median wind speed
-	! commented as the sorting function slows down the program
-	!ws_median = median(ws)
+	ws_median = median(ws)
 
 	print*, "Found Weibull distribution parameters:"
 	print*
@@ -75,7 +76,7 @@ program find_weibull
 	write(*, "(A,F4.2,A)") " scale factor c: ", c
 	print*
 	write(*, "(A,F4.2,A)") " Mean wind speed: ", ws_mean, " m/s"
-	!write(*, "(A,F4.2,A)") " Median wind speed: ", ws_median, " m/s"
+	write(*, "(A,F4.2,A)") " Median wind speed: ", ws_median, " m/s"
 
 	deallocate(ws)
 
@@ -173,7 +174,7 @@ function median(x) result(m)
 	n = size(x)
 	allocate(xs(n))
 	
-	xs = sort_si(x)
+	xs = qsort(x)
 	
 	if (mod(n, 2) == 0) then
 		m = (xs(n/2) + xs(n/2+1)) / 2
@@ -184,34 +185,18 @@ function median(x) result(m)
 	deallocate(xs)
 end function median
 
-function sort_si(x) result(xs)
-! Simpele soring with straight insertion
-	implicit none
-	
-	real, dimension(1:), intent(in) :: x
-	real, allocatable :: xs(:)
-	
-	integer :: i,j,n
-	
-	real :: a
-	
-	n = size(x)
-	allocate(xs(n))
-	
-	xs = x
-	
-	do j = 2, n
-		a = xs(j)
-		do i = j-1, 1, -1
-			if (xs(i) <= a) then
-				goto 99
-			end if
-			xs(i+1) = xs(i)
-		end do
-		i = 0
-99		xs(i+1) = a
-	end do
-	
-end function sort_si
+! sorting function from 
+! https://fortran-lang.discourse.group/t/modern-fortran-sample-code/2019/4
+pure recursive function qsort(data) result(sorted)
+real, intent(in) :: data(:)
+real             :: sorted(size(data))
+if (size(data) > 1) then
+   sorted = [qsort(pack(data(2:),data(2:)<data(1))), data(1), &
+             qsort(pack(data(2:),data(2:)>=data(1)))]
+else
+   sorted = data
+end if
+end function qsort
+
 
 end program find_weibull
