@@ -18,7 +18,6 @@
 program find_weibull
     implicit none
         
-    !character(len=10) :: header_name
     character(len=*), parameter :: fname = "WS125.txt"
     integer, parameter :: maxread = 10**6
     
@@ -31,12 +30,12 @@ program find_weibull
     real :: ws_mean, ws_median
     real :: kmax, kmin
     real :: eps
-    real, allocatable :: rtemp(:), ws(:), wss(:)
+    real, allocatable :: rtemp(:), ws(:)
 
     allocate(rtemp(maxread))
     nread = maxread
     open(newunit = funit, file = fname, action = "read", status = "old")
-    read(funit, *)
+    read(funit, *)      ! read the header
     do i = 1, maxread
             read(funit, *, iostat = ierr) rtemp(i)
             if (ierr /= 0) then ! reached end of file
@@ -46,9 +45,7 @@ program find_weibull
     end do
     close(funit)
 
-    allocate(ws(nread))
-    allocate(wss(nread))
-    ws = rtemp(:nread)
+    allocate(ws(nread), source=rtemp(:nread))
     deallocate(rtemp)
     
     ! range for searching k and c
@@ -106,16 +103,14 @@ contains
     function bisection(x, ikmin, ikmax, eps, iter) result (k)
         implicit none
         
-        real, dimension(1:), intent(in) :: x
-        real, intent(in) :: ikmin
-        real, intent(in) :: ikmax
-        real, intent(in) :: eps
-        real :: k, fk, fkk
+        real, intent(in) :: x(:)
+        real, intent(in) :: ikmin, ikmax, eps
         integer, intent(in) :: iter
-        
+        real :: k
         
         integer :: j
         
+        real :: fk, fkk
         real :: fkmin, fkmax
         real :: kmin, kmax
         
@@ -173,7 +168,6 @@ contains
         else
                 median = xs(n+1)/2
         end if
-        
     end function median
 
     ! sorting function from 
@@ -188,6 +182,5 @@ contains
            sorted = data
         end if
     end function qsort
-
 
 end program find_weibull
