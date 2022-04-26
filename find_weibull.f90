@@ -80,33 +80,27 @@ program find_weibull
 contains
 
     ! k estimator
-    real function k_estimator(x, kin)
-        implicit none
+    pure real function k_estimator(x, kin) result(res)
         
         real, intent(in) :: x(:)
         real, intent(in) :: kin
         
         integer :: n
-        real :: xmean, xmean3
         
         n = size(x)
-        
-        xmean = (sum(x) / n)**3
 
-        xmean3 = sum(x**3) / n
-        k_estimator = xmean3 / xmean
-        k_estimator = k_estimator * (gamma(1.0+1.0/kin)**3) - gamma(1.0 + 3.0/kin)
+        res = (sum(x**3) / n) / ((sum(x) / n)**3)
+        res = res * (gamma(1.0+1.0/kin)**3) - gamma(1.0 + 3.0/kin)
 
     end function k_estimator
 
 
-    function bisection(x, ikmin, ikmax, eps, iter) result (k)
-        implicit none
+    real function bisection(x, ikmin, ikmax, eps, iter) result (k)
         
         real, intent(in) :: x(:)
         real, intent(in) :: ikmin, ikmax, eps
         integer, intent(in) :: iter
-        real :: k
+        !real :: k
         
         integer :: j
         
@@ -151,8 +145,7 @@ contains
         k = 0
     end function bisection
 
-    real function median(x)
-        implicit none
+    pure real function median(x) result(res)
         
         real, intent(in) :: x(:)
         real :: xs(size(x))
@@ -164,9 +157,9 @@ contains
         n = size(x)
 
         if (mod(n, 2) == 0) then
-                median = (xs(n/2) + xs(n/2+1)) / 2
+                res = (xs(n/2) + xs(n/2+1)) / 2
         else
-                median = xs(n+1)/2
+                res = xs(n+1)/2
         end if
     end function median
 
@@ -175,6 +168,7 @@ contains
     pure recursive function qsort(data) result(sorted)
         real, intent(in) :: data(:)
         real             :: sorted(size(data))
+        
         if (size(data) > 1) then
            sorted = [qsort(pack(data(2:),data(2:)<data(1))), data(1), &
                      qsort(pack(data(2:),data(2:)>=data(1)))]
