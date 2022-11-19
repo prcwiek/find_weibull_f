@@ -174,7 +174,7 @@ contains
         if (mod(n, 2) == 0) then
                 res = (xs(n/2) + xs(n/2+1)) / 2
         else
-                res = xs(n+1)/2
+                res = xs((n+1)/2)
         end if
     end function median
 
