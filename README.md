@@ -1,7 +1,7 @@
 # Find Weibull
 
 Simple program for finding the Weibull distribution parameters
-k shape factor and c scale factor.Usage:<br><br>
+k shape factor and c scale factor. Usage:<br><br>
 ./find_weibull.out <i>filename</i><br><br>
 where <i>filename</i> is a text file from which program loads the first column with th header.<br><br>
 The file <i>WS125.txt</i> with the example wind measurement data set comes
