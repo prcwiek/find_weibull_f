@@ -17,11 +17,15 @@
 !
 
 program find_weibull
+    
     implicit none
         
-    character(len=*), parameter :: fname = "WS125.txt"
     integer, parameter :: maxread = 10**6
+
+    logical :: file_exists
     
+    character(len=9999) :: fname
+
     integer :: i, nread
     integer :: funit, ierr
     integer :: niter
@@ -33,6 +37,16 @@ program find_weibull
     real :: eps
     real, allocatable :: rtemp(:), ws(:)
 
+    ! check if an argument is present
+    if(command_argument_count() < 1) stop 'Usage: find_weibull.out <filename>'
+    
+    ! get a filename from an argument
+    call get_command_argument(1, fname)
+
+    ! check if file exists
+    inquire(file = fname, exist = file_exists)
+    if(.not. file_exists) stop 'File does not exist!'
+ 
     allocate(rtemp(maxread))
     nread = maxread
     open(newunit = funit, file = fname, action = "read", status = "old")
