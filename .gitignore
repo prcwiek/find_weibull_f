@@ -34,4 +34,5 @@
 # ignore all files in a directory others
 others/
 
-
+# vim files
+*.swp
